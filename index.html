@@ -336,6 +336,12 @@ const music=(()=>{
     else { M.unlocked=true; const at = el.currentTime>0 ? el.currentTime : (mode==='game'?GAME_AT:MENU_AT); startAt(at, mode==='game'?VOL_GAME:VOL_MENU, 0.6); } });
   document.addEventListener('visibilitychange',()=>{ if(!M.unlocked||muted) return; if(document.hidden) el.pause(); else play(); });
   paint();
+  // 페이지가 열리자마자 재생 시도: 브라우저가 허용하면 바로 나오고, 막으면 첫 탭에서 켜짐
+  if(!muted){
+    seek(MENU_AT); setVol(0);
+    const p=el.play();
+    if(p&&p.then) p.then(()=>{ M.unlocked=true; fadeTo(VOL_MENU,1.2); }).catch(()=>{ el.pause(); });
+  }
   return M;
 })();
 
